@@ -1,0 +1,13 @@
+# Runtime state created by the control panel (mode 0700).
+/data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors / OS
+.DS_Store
+.idea/
+*.swp

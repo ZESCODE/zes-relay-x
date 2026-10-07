@@ -1,0 +1,18 @@
+# Build context is the repository root (see control-panel/Dockerfile).
+**/node_modules
+**/.next
+**/out
+**/dist
+**/coverage
+**/*.tsbuildinfo
+**/.env.local
+**/.env.*.local
+data/
+.git
+.gitignore
+**/.DS_Store
+**/__pycache__
+**/*.pyc
+**/.venv
+control-panel/BUILD-PROMPT.md
+control-panel/DELIVERABLE.md
