@@ -1,4 +1,4 @@
-import { authenticate, cookieOptions } from '@/server/auth';
+import { isSecureRequest, authenticate, cookieOptions } from '@/server/auth';
 import { ok, route } from '@/server/http';
 import { getLogBus } from '@/server/log-bus';
 import { CSRF_COOKIE, SESSION_COOKIE } from '@/server/session-token';
@@ -12,8 +12,13 @@ export const POST = route(async ({ request }) => {
   // Clear both cookies; the CSRF cookie is deliberately non-httpOnly and
   // therefore always sent to the server, so clearing it is enough for the next
   // login to mint a fresh pair.
-  response.cookies.set(SESSION_COOKIE, '', cookieOptions({ secure: false, maxAgeSeconds: 0, httpOnly: true }));
-  response.cookies.set(CSRF_COOKIE, '', cookieOptions({ secure: false, maxAgeSeconds: 0, httpOnly: false }));
+  const secure = isSecureRequest(request);
+  response.cookies.set(
+    SESSION_COOKIE,
+    '',
+    cookieOptions({ secure, maxAgeSeconds: 0, httpOnly: true }),
+  );
+  response.cookies.set(CSRF_COOKIE, '', cookieOptions({ secure, maxAgeSeconds: 0, httpOnly: false }));
   if (context) {
     getLogBus().push({
       source: 'system',

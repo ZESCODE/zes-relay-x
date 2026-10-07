@@ -304,6 +304,7 @@ also be edited at runtime from the **Config** page, which writes `data/.env`).
 | `PANEL_ADMIN_USER` | `admin` | First-run admin username. |
 | `PANEL_ADMIN_PASSWORD` | *generated* | First-run admin password (≥ 10 chars). Empty ⇒ one-time password printed once. |
 | `PANEL_TRUST_PROXY` | `false` | Honour `X-Forwarded-For` / `X-Forwarded-Host` (rate limiting + Origin checks). |
+| `PANEL_COOKIE_SAMESITE` | `lax` | `lax` \| `strict` \| `none`. Use `none` when embedding the panel in a cross-site iframe — `Secure` is then enforced, as browsers require. |
 | `NEXT_TELEMETRY_DISABLED` | `1` | Keeps the build and runtime telemetry-free. |
 
 ### Relay process

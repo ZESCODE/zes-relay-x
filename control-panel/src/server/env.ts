@@ -82,6 +82,17 @@ export const env = {
   get adminPassword(): string | null {
     return envOptional('PANEL_ADMIN_PASSWORD');
   },
+  /**
+   * Cookie SameSite policy.
+   *
+   * `lax` is the right default for a loopback panel. Embedded previews (a
+   * cross-site iframe) need `none`, which browsers only accept together with
+   * `Secure` — cookieOptions() enforces that pairing.
+   */
+  get cookieSameSite(): 'lax' | 'strict' | 'none' {
+    const raw = envString('PANEL_COOKIE_SAMESITE', 'lax').toLowerCase();
+    return raw === 'strict' || raw === 'none' ? raw : 'lax';
+  },
   get trustProxy(): boolean {
     return envBool('PANEL_TRUST_PROXY', false);
   },

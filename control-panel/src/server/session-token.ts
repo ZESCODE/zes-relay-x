@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from 'jose';
+import { env } from './env';
 
 /**
  * Session tokens — **edge-safe** (no node:crypto, no fs).
@@ -79,14 +80,16 @@ export function cookieOptions(options: {
 }): {
   httpOnly: boolean;
   secure: boolean;
-  sameSite: 'lax';
+  sameSite: 'lax' | 'strict' | 'none';
   path: string;
   maxAge: number;
 } {
+  const sameSite = env.cookieSameSite;
   return {
     httpOnly: options.httpOnly,
-    secure: options.secure,
-    sameSite: 'lax',
+    // SameSite=None is rejected by browsers unless the cookie is Secure.
+    secure: sameSite === 'none' ? true : options.secure,
+    sameSite,
     path: '/',
     maxAge: options.maxAgeSeconds,
   };
