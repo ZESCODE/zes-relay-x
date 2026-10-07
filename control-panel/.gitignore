@@ -1,0 +1,20 @@
+# Dependencies
+/node_modules
+
+# Next.js
+/.next
+/out
+next-env.d.ts
+*.tsbuildinfo
+
+# Runtime state (created with mode 0700 by src/server/fs-paths.ts)
+/data
+
+# Local environment overrides — never commit credentials
+.env.local
+.env*.local
+
+# Test & tooling artefacts
+/coverage
+/vitest-report.json
+/DELIVERABLE.md

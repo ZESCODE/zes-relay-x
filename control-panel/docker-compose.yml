@@ -1,0 +1,48 @@
+services:
+  panel:
+    # Build from the repository root: the image ships pol_relay.py too.
+    build:
+      context: ..
+      dockerfile: control-panel/Dockerfile
+    image: zes-relay-panel:1.0.0
+    container_name: zes-relay-panel
+    # tini as PID 1 → SIGTERM reaches the panel, which then stops the relay.
+    init: true
+    restart: unless-stopped
+    ports:
+      # The panel is a control plane: publish it on loopback by default.
+      # Change to "3000:3000" only if you terminate TLS in front of it.
+      - '127.0.0.1:3000:3000'
+    environment:
+      PANEL_HOST: 0.0.0.0
+      PANEL_PORT: '3000'
+      PANEL_ALLOW_PUBLIC: 'true'
+      PANEL_DATA_DIR: /app/data
+      PANEL_RELAY_SCRIPT: /app/pol_relay.py
+      PANEL_PYTHON_BIN: python3
+      # Relay defaults; the Config page writes these into /app/data/.env.
+      POL_RELAY_PORT: '7179'
+      POL_UPSTREAM_BASE: 'https://gen.pollinations.ai/v1'
+      POL_SKIP_AUTH: 'true'
+      # First run: give the admin a password, or omit and read the one-time
+      # password from `docker compose logs panel`.
+      PANEL_ADMIN_USER: admin
+      PANEL_ADMIN_PASSWORD: ${PANEL_ADMIN_PASSWORD:-}
+      # Uncomment when running behind a reverse proxy you control.
+      # PANEL_TRUST_PROXY: 'true'
+      # PANEL_FRAME_ANCESTORS: "'self'"
+    volumes:
+      # Runtime state: sessions, tokens, metrics snapshot, logs, backups.
+      - panel-data:/app/data
+      # Live-edit the relay without rebuilding the image.
+      - ../pol_relay.py:/app/pol_relay.py:ro
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/api/health']
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3
+
+volumes:
+  panel-data:
+    name: zes-relay-panel-data
